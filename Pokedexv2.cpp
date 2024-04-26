@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm> //transform
 #include <string>
-#include <cctype>  // tolower
+#include <cctype>	 // tolower
 #include <fstream> //arquivos
 #include <sstream> // parse do arquivo csv
 // #include <windows.h> //system
@@ -75,7 +75,7 @@ int compara_tipo(const void *a, const void *b)
 // qual = 1: acha o nome;  qual = 2: acha o tipo
 int binaria(string txt, int tamanho, int qual)
 {
-	bool achou;			   // var aux p/ busca
+	bool achou;						 // var aux p/ busca
 	int baixo, meio, alto; // var aux
 	string txt2;
 	baixo = 0;
