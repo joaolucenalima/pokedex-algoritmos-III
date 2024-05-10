@@ -10,12 +10,18 @@
 
 using namespace std;
 
+struct treenode
+{
+	Pokemon pokemon;
+	struct treenode *left;
+	struct treenode *right;
+};
+
 struct Pokemon
 {
 	int numero;
 	string name;
 	string tipo1;
-	string tipo2;
 	int x;
 	int y;
 };
@@ -46,7 +52,7 @@ Pokemon cadastro()
 	getline(cin >> ws, pokemon.nome);
 	cout << "Qual o tipo do pokemon" << endl;
 	getline(cin >> ws, pokemon.tipo);
-	cout << "Qual a localiza��o do pokemon? (x|y)" << endl;
+	cout << "Qual a localização do pokemon? (x|y)" << endl;
 	cin >> x >> y;
 	return pokemon;
 }
@@ -174,10 +180,32 @@ void mostrar_cidades()
 	getchar();
 }
 
+void bTreeInsert(treenode *root, Pokemon value)
+{
+	if (root == NULL)
+	{
+		root = new treenode;
+		root->pokemon = value;
+		root->left = NULL;
+		root->right = NULL;
+	}
+	else if (value.name < root->pokemon.name)
+	{
+		bTreeInsert(root->left, value);
+	}
+	else
+	{
+		bTreeInsert(root->right, value);
+	}
+}
+
 int main()
 {
 	int x;
-	Pokemon pokemon;
+
+  Pokemon pokemon;
+	treenode *root = NULL;
+
 	do
 	{
 		mostra_menu();
@@ -186,6 +214,7 @@ int main()
 		{
 		case 1: // cadastrar pokemon
 			pokemon = cadastro();
+      bTreeInsert(root, pokemon);
 			return;
 			break;
 		case 2: // listar pokemon em ordem alfabetica dos nomes
@@ -205,7 +234,7 @@ int main()
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
 			else
-				cout << "Cidade mais próxima com centro pokemon: " << dijkstra(c) << endl;
+				cout << "Cidade mais prÃ³xima com centro pokemon: " << dijkstra(c) << endl;
 			fflush(stdin);
 			getchar();
 			break;
