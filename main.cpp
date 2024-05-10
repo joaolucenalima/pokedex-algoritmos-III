@@ -4,16 +4,13 @@
 #include <iostream>
 #include <algorithm> //transform
 #include <string>
-#include <cctype>	 // tolower
-#include <fstream> //arquivos
-#include <sstream> // parse do arquivo csv
 // #include <windows.h> //system
 #include <list>
 #include <climits>
 
 using namespace std;
 
-struct info
+struct Pokemon
 {
 	int numero;
 	string name;
@@ -36,12 +33,6 @@ struct cidade
 	bool centro_pkm;
 	list<edge> cidades_adj;
 };
-
-string tipagem[18] = {"agua", "dragao", "eletrico", "fada", "fantasma", "fogo", "gelo", "grama", "inseto", "lutador", "metal", "normal", "psiquico", "rocha", "sombrio", "terra", "venenoso", "voador"};
-int qtd_tipagem[18];
-
-int qtd_pokemon = 0;
-info pokedex[1015];
 
 cidade cidades[10];
 int qtd_cidades = 0;
@@ -170,9 +161,6 @@ void mostrar_cidades()
 
 int main()
 {
-	for (int i = 0; i < 18; i++)
-		qtd_tipagem[i] = 0;
-
 	int x;
 
 	do
