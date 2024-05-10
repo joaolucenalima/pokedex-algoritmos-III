@@ -37,6 +37,21 @@ struct cidade
 cidade cidades[10];
 int qtd_cidades = 0;
 
+Pokemon cadastro()
+{
+	Pokemon pokemon;
+	cout << "Qual o numero do pokemon?" << endl;
+	cin >> pokemon.numero;
+	cout << "Qual o nome do pokemon?" << endl;
+	getline(cin >> ws, pokemon.nome);
+	cout << "Qual o tipo do pokemon" << endl;
+	getline(cin >> ws, pokemon.tipo);
+	cout << "Qual a localização do pokemon? (x|y)" << endl;
+	cin >> x >> y;
+	return pokemon;
+}
+
+
 void mostra_menu()
 {
 	system("cls");
@@ -162,7 +177,7 @@ void mostrar_cidades()
 int main()
 {
 	int x;
-
+	Pokemon pokemon;
 	do
 	{
 		mostra_menu();
@@ -170,6 +185,7 @@ int main()
 		switch (x)
 		{
 		case 1: // cadastrar pokemon
+			pokemon = cadastro();
 			return;
 			break;
 		case 2: // listar pokemon em ordem alfabetica dos nomes
@@ -203,6 +219,7 @@ int main()
 		default:
 			break;
 		}
-	} while (x != 0);
+	}
+	while (x != 0);
 	return 0;
 }
