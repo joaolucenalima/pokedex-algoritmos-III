@@ -10,12 +10,18 @@
 
 using namespace std;
 
+struct treenode
+{
+	Pokemon pokemon;
+	struct treenode *left;
+	struct treenode *right;
+};
+
 struct Pokemon
 {
 	int numero;
 	string name;
 	string tipo1;
-	string tipo2;
 	int x;
 	int y;
 };
@@ -159,9 +165,30 @@ void mostrar_cidades()
 	getchar();
 }
 
+void bTreeInsert(treenode *root, Pokemon value)
+{
+	if (root == NULL)
+	{
+		root = new treenode;
+		root->pokemon = value;
+		root->left = NULL;
+		root->right = NULL;
+	}
+	else if (value.name < root->pokemon.name)
+	{
+		bTreeInsert(root->left, value);
+	}
+	else
+	{
+		bTreeInsert(root->right, value);
+	}
+}
+
 int main()
 {
 	int x;
+
+	treenode *root = NULL;
 
 	do
 	{
