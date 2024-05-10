@@ -20,8 +20,8 @@ struct treenode
 struct Pokemon
 {
 	int numero;
-	string name;
-	string tipo1;
+	string nome;
+	string tipo;
 	int x;
 	int y;
 };
@@ -53,10 +53,9 @@ Pokemon cadastro()
 	cout << "Qual o tipo do pokemon" << endl;
 	getline(cin >> ws, pokemon.tipo);
 	cout << "Qual a localização do pokemon? (x|y)" << endl;
-	cin >> x >> y;
+	cin >> pokemon.x >> pokemon.y;
 	return pokemon;
 }
-
 
 void mostra_menu()
 {
@@ -189,7 +188,7 @@ void bTreeInsert(treenode *root, Pokemon value)
 		root->left = NULL;
 		root->right = NULL;
 	}
-	else if (value.name < root->pokemon.name)
+	else if (value.nome < root->pokemon.nome)
 	{
 		bTreeInsert(root->left, value);
 	}
@@ -203,7 +202,7 @@ int main()
 {
 	int x;
 
-  Pokemon pokemon;
+	Pokemon pokemon;
 	treenode *root = NULL;
 
 	do
@@ -214,7 +213,7 @@ int main()
 		{
 		case 1: // cadastrar pokemon
 			pokemon = cadastro();
-      bTreeInsert(root, pokemon);
+			bTreeInsert(root, pokemon);
 			return;
 			break;
 		case 2: // listar pokemon em ordem alfabetica dos nomes
@@ -248,7 +247,6 @@ int main()
 		default:
 			break;
 		}
-	}
-	while (x != 0);
+	} while (x != 0);
 	return 0;
 }
