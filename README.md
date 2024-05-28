@@ -25,11 +25,11 @@ Para ajudar no desenvolvimento da Pokédex, o código deve ser capaz de:
 - [x] Informar qual a rota deve ser tomada para chegar no centro pokémon mais
   próximo, dado o código da cidade atual da Pokédex;
   
-- [ ] Inserir pokémons incluindo seu nome, seu tipo, seu número e sua localização (x,y) no mapa;
+- [x] Inserir pokémons incluindo seu nome, seu tipo, seu número e sua localização (x,y) no mapa;
   
-- [ ] Imprimir todas essas informações em ordem crescente dos nomes;
+- [x] Imprimir todas essas informações em ordem crescente dos nomes;
 
-- [ ] Verificar se um pokémon existe pelo seu nome (se sim, imprimir “Pokémon
+- [x] Verificar se um pokémon existe pelo seu nome (se sim, imprimir “Pokémon
   encontrado!”, se não “Pokémon não encontrado!”);
   
 - [ ] Ordenar e imprimir os pokémons por ordem alfabética dos tipos;

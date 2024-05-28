@@ -1,10 +1,9 @@
 // Trabalho da disciplina de Algoritmos 3, ministrada pelo professor Jonas Lopes de Vilas Boas
-// Alunos: Andre Augusto Coelho Silva, Henrique Oliveira Campello, Lucas  Ynoguti e Joao Vitor de Lucena
+// Alunos: Andre Augusto Coelho Silva, Henrique Oliveira Campello, Lucas Nolasco Ynoguti e Joao Vitor de Lucena
 
 #include <iostream>
 #include <algorithm> //transform
 #include <string>
-// #include <windows.h> //system
 #include <list>
 #include <climits>
 
@@ -70,6 +69,7 @@ void mostra_menu()
 	cout << "[Digite 7 para contar quantos pokemons tem de determinado tipo!]" << endl;
 	cout << "[Digite 8 para mostrar quantos pokemons pode ser encontrados em um raio de 100 metros!]" << endl;
 	cout << "[Digite 9 para mostrar todas as cidades.]" << endl;
+	cout << "[Digite 10 remover um pokemon.]" << endl;
 	return;
 }
 
@@ -179,7 +179,7 @@ void mostrar_cidades()
 	getchar();
 }
 
-void bTreeInsert(treenode *root, Pokemon value)
+void insertPokemon(treenode *root, Pokemon value)
 {
 	if (root == NULL)
 	{
@@ -190,37 +190,135 @@ void bTreeInsert(treenode *root, Pokemon value)
 	}
 	else if (value.nome < root->pokemon.nome)
 	{
-		bTreeInsert(root->left, value);
+		insertPokemon(root->left, value);
 	}
 	else
 	{
-		bTreeInsert(root->right, value);
+		insertPokemon(root->right, value);
 	}
+}
+
+void imprimirPokemonEmOrdem(treenode *root)
+{
+	if (root != NULL)
+	{
+		imprimirPokemonEmOrdem(root->left);
+		cout << root->pokemon.nome << endl;
+		imprimirPokemonEmOrdem(root->right);
+	}
+}
+
+treenode *pesquisarPokemon(treenode *root, string nome)
+{
+	if (root == NULL)
+		return NULL;
+
+	if (root->pokemon.nome == nome)
+		return root;
+
+	if (nome < root->pokemon.nome)
+		return pesquisarPokemon(root->left, nome);
+
+	return pesquisarPokemon(root->right, nome);
+}
+
+treenode *encontrarMenorPokemon(treenode *root)
+{
+	if (root == NULL)
+		return NULL;
+
+	if (root->left == NULL)
+		return root;
+
+	return encontrarMenorPokemon(root->left);
+}
+
+int removerPokemon(treenode *root, string nome)
+{
+	if (root == NULL)
+		return NULL;
+
+	if (root->pokemon.nome == nome)
+	{
+		treenode *p;
+
+		if (root == NULL)
+		{
+			return 1;
+		}
+
+		if (nome == root->pokemon.nome)
+		{
+			p = root;
+			if (root->left == NULL)
+			{
+				root = root->right;
+			}
+			else if (root->right == NULL)
+			{
+				root = root->left;
+			}
+			else
+			{
+				p = encontrarMenorPokemon(root->right);
+				root->pokemon.nome = p->pokemon.nome;
+			}
+			delete p;
+			return 0;
+		}
+
+		else if (nome < root->pokemon.nome)
+		{
+			return removerPokemon(root->left, nome);
+		}
+		else
+		{
+			return removerPokemon(root->right, nome);
+		}
+	}
+
+	if (nome < root->pokemon.nome)
+		return removerPokemon(root->left, nome);
+
+	return removerPokemon(root->right, nome);
 }
 
 int main()
 {
 	int x;
-
 	Pokemon pokemon;
 	treenode *root = NULL;
+
+	treenode *pokemonPesquisado;
+	string nome;
 
 	do
 	{
 		mostra_menu();
 		cin >> x;
+
 		switch (x)
 		{
 		case 1: // cadastrar pokemon
 			pokemon = cadastro();
-			bTreeInsert(root, pokemon);
+			insertPokemon(root, pokemon);
 			return;
 			break;
 		case 2: // listar pokemon em ordem alfabetica dos nomes
+			imprimirPokemonEmOrdem(root);
 			break;
 		case 3: // listar pokemon em ordem alfabetica dos tipos
 			break;
 		case 4: // pesquisar pokemons
+			cout << "Digite o nome do pokemon que deseja pesquisar: " << endl;
+			getline(cin >> ws, nome);
+			pokemonPesquisado = pesquisarPokemon(root, nome);
+
+			if (pokemonPesquisado == NULL)
+				cout << "Pokemon nao encontrado!" << endl;
+			else
+				cout << "Pokemon encontrado: " << pokemonPesquisado->pokemon.nome << endl;
+
 			break;
 		case 5: // cadastrar cidade
 			cadastrocidade();
@@ -233,7 +331,7 @@ int main()
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
 			else
-				cout << "Cidade mais prÃ³xima com centro pokemon: " << dijkstra(c) << endl;
+				cout << "Cidade mais próxima com centro pokemon: " << dijkstra(c) << endl;
 			fflush(stdin);
 			getchar();
 			break;
@@ -244,9 +342,19 @@ int main()
 		case 9:
 			mostrar_cidades();
 			break;
+		case 10: // remover um pokemon
+			cin >> nome;
+			if (removerPokemon(root, nome))
+			{
+				cout << "O pokemon foi removido";
+			}
+
+			break;
 		default:
+			cout << "Opcao invalida!" << endl;
 			break;
 		}
 	} while (x != 0);
+
 	return 0;
 }
