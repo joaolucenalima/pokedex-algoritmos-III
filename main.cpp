@@ -6,15 +6,9 @@
 #include <string>
 #include <list>
 #include <climits>
+#include <stdio.h>
 
 using namespace std;
-
-struct treenode
-{
-	Pokemon pokemon;
-	struct treenode *left;
-	struct treenode *right;
-};
 
 struct Pokemon
 {
@@ -24,6 +18,15 @@ struct Pokemon
 	int x;
 	int y;
 };
+
+struct treenode
+{
+	Pokemon pokemon;
+	struct treenode *left;
+	struct treenode *right;
+};
+
+typedef treenode *treenodeptr;
 
 struct edge
 {
@@ -51,7 +54,7 @@ Pokemon cadastro()
 	getline(cin >> ws, pokemon.nome);
 	cout << "Qual o tipo do pokemon" << endl;
 	getline(cin >> ws, pokemon.tipo);
-	cout << "Qual a localização do pokemon? (x|y)" << endl;
+	cout << "Qual a localizaÃ§Ã£o do pokemon? (x|y)" << endl;
 	cin >> pokemon.x >> pokemon.y;
 	return pokemon;
 }
@@ -179,7 +182,7 @@ void mostrar_cidades()
 	getchar();
 }
 
-void insertPokemon(treenode *root, Pokemon value)
+void insertPokemon(treenodeptr &root, Pokemon value)
 {
 	if (root == NULL)
 	{
@@ -198,17 +201,37 @@ void insertPokemon(treenode *root, Pokemon value)
 	}
 }
 
-void imprimirPokemonEmOrdem(treenode *root)
+void insertPokemonTipo(treenodeptr &root, Pokemon value)
 {
-	if (root != NULL)
+	if (root == NULL)
 	{
-		imprimirPokemonEmOrdem(root->left);
-		cout << root->pokemon.nome << endl;
-		imprimirPokemonEmOrdem(root->right);
+		root = new treenode;
+		root->pokemon = value;
+		root->left = NULL;
+		root->right = NULL;
+	}
+	else if (value.tipo < root->pokemon.tipo)
+	{
+		insertPokemon(root->left, value);
+	}
+	else
+	{
+		insertPokemon(root->right, value);
 	}
 }
 
-treenode *pesquisarPokemon(treenode *root, string nome)
+void imprimirPokemonEmOrdem(treenodeptr root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	imprimirPokemonEmOrdem(root->left);
+	cout << "Nome: " << root->pokemon.nome << " Tipo: " << root->pokemon.tipo << endl;
+	imprimirPokemonEmOrdem(root->right);
+}
+
+treenode *pesquisarPokemon(treenodeptr root, string nome)
 {
 	if (root == NULL)
 		return NULL;
@@ -222,7 +245,7 @@ treenode *pesquisarPokemon(treenode *root, string nome)
 	return pesquisarPokemon(root->right, nome);
 }
 
-treenode *encontrarMenorPokemon(treenode *root)
+treenode *encontrarMenorPokemon(treenodeptr root)
 {
 	if (root == NULL)
 		return NULL;
@@ -233,14 +256,14 @@ treenode *encontrarMenorPokemon(treenode *root)
 	return encontrarMenorPokemon(root->left);
 }
 
-int removerPokemon(treenode *root, string nome)
+int removerPokemon(treenodeptr root, string nome)
 {
 	if (root == NULL)
 		return NULL;
 
 	if (root->pokemon.nome == nome)
 	{
-		treenode *p;
+		treenodeptr p;
 
 		if (root == NULL)
 		{
@@ -287,8 +310,8 @@ int main()
 {
 	int x;
 	Pokemon pokemon;
-	treenode *root = NULL;
-
+	treenodeptr root = NULL;
+	treenodeptr root_tipos = NULL;
 	treenode *pokemonPesquisado;
 	string nome;
 
@@ -302,12 +325,17 @@ int main()
 		case 1: // cadastrar pokemon
 			pokemon = cadastro();
 			insertPokemon(root, pokemon);
-			return;
+			insertPokemonTipo(root_tipos, pokemon);
 			break;
 		case 2: // listar pokemon em ordem alfabetica dos nomes
 			imprimirPokemonEmOrdem(root);
+			fflush(stdin);
+			getchar();
 			break;
 		case 3: // listar pokemon em ordem alfabetica dos tipos
+			imprimirPokemonEmOrdem(root_tipos);
+			fflush(stdin);
+			getchar();
 			break;
 		case 4: // pesquisar pokemons
 			cout << "Digite o nome do pokemon que deseja pesquisar: " << endl;
@@ -331,7 +359,7 @@ int main()
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
 			else
-				cout << "Cidade mais próxima com centro pokemon: " << dijkstra(c) << endl;
+				cout << "Cidade mais prÃ³xima com centro pokemon: " << dijkstra(c) << endl;
 			fflush(stdin);
 			getchar();
 			break;
@@ -346,15 +374,14 @@ int main()
 			cin >> nome;
 			if (removerPokemon(root, nome))
 			{
-				cout << "O pokemon foi removido";
+				cout << "O pokemon foi removido" << endl;
 			}
-
 			break;
 		default:
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
-	} while (x != 0);
-
+	}
+	while (x != 0);
 	return 0;
 }
