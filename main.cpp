@@ -214,7 +214,7 @@ void insertPokemonTipo(treenodeptr &root, Pokemon value)
 	{
 		insertPokemon(root->left, value);
 	}
-	else if (value.tipo < root->pokemon.tipo)
+	else if (value.tipo > root->pokemon.tipo)
 	{
 		insertPokemon(root->right, value);
 	}
@@ -222,8 +222,8 @@ void insertPokemonTipo(treenodeptr &root, Pokemon value)
 	{
 		if (value.nome < root->pokemon.nome)
 			insertPokemon(root->left, value);
-		else if (value.nome > root->pokemon.nome)
-			insertPokemon(root->left, value);
+		else
+			insertPokemon(root->right, value);
 	}
 }
 
@@ -265,6 +265,7 @@ bool removerPokemon(treenodeptr &p, string nome)
 	treenodeptr t;
 	if (p == NULL)
 		return false;
+
 	if (nome == p->pokemon.nome)
 	{
 		t = p;
@@ -292,6 +293,7 @@ bool removerPokemonTipo(treenodeptr &p, string tipo, string nome)
 	treenodeptr t;
 	if (p == NULL)
 		return false;
+
 	if (nome == p->pokemon.nome)
 	{
 		t = p;
@@ -307,9 +309,11 @@ bool removerPokemonTipo(treenodeptr &p, string tipo, string nome)
 		delete t;
 		return true;
 	}
-	else if (tipo < p->pokemon.tipo)
+
+	if (tipo < p->pokemon.tipo)
 		return removerPokemonTipo(p->left, tipo, nome);
-	else if (tipo < p->pokemon.tipo)
+
+	if (tipo > p->pokemon.tipo)
 		return removerPokemonTipo(p->right, tipo, nome);
 	else
 	{
