@@ -214,9 +214,16 @@ void insertPokemonTipo(treenodeptr &root, Pokemon value)
 	{
 		insertPokemon(root->left, value);
 	}
-	else
+	else if(value.tipo < root->pokemon.tipo)
 	{
 		insertPokemon(root->right, value);
+	}
+	else
+	{
+		if(value.nome < root->pokemon.nome)
+			insertPokemon(root->left, value);
+		else if(value.nome > root->pokemon.nome)
+			insertPokemon(root->left, value);
 	}
 }
 
@@ -245,65 +252,76 @@ treenode *pesquisarPokemon(treenodeptr root, string nome)
 	return pesquisarPokemon(root->right, nome);
 }
 
-treenode *encontrarMenorPokemon(treenodeptr root)
+
+treenodeptr encontrarMenorPokemon(treenodeptr &p)
 {
-	if (root == NULL)
-		return NULL;
-
-	if (root->left == NULL)
-		return root;
-
-	return encontrarMenorPokemon(root->left);
+	treenodeptr t = p;
+	if (p->left == NULL)
+	{
+		p = p->right;
+		return t;
+	}
+	else
+		return encontrarMenorPokemon(p->left);
 }
 
-int removerPokemon(treenodeptr root, string nome)
+bool removerPokemon(treenodeptr &p, string nome)
 {
-	if (root == NULL)
-		return NULL;
-
-	if (root->pokemon.nome == nome)
+	treenodeptr t;
+	if (p == NULL)
+		return false;
+	if (nome == p->pokemon.nome)
 	{
-		treenodeptr p;
-
-		if (root == NULL)
-		{
-			return 1;
-		}
-
-		if (nome == root->pokemon.nome)
-		{
-			p = root;
-			if (root->left == NULL)
-			{
-				root = root->right;
-			}
-			else if (root->right == NULL)
-			{
-				root = root->left;
-			}
-			else
-			{
-				p = encontrarMenorPokemon(root->right);
-				root->pokemon.nome = p->pokemon.nome;
-			}
-			delete p;
-			return 0;
-		}
-
-		else if (nome < root->pokemon.nome)
-		{
-			return removerPokemon(root->left, nome);
-		}
+		t = p;
+		if (p->left == NULL)
+			p = p->right;
+		else if (p->right == NULL)
+			p = p->left;
 		else
 		{
-			return removerPokemon(root->right, nome);
+			t = encontrarMenorPokemon(p->right);
+			p->pokemon = t->pokemon;
 		}
+		delete t;
+		return true;
 	}
+	else if (nome < p->pokemon.nome)
+		return removerPokemon(p->left, nome);
+	else
+		return removerPokemon(p->right, nome);
+}
 
-	if (nome < root->pokemon.nome)
-		return removerPokemon(root->left, nome);
-
-	return removerPokemon(root->right, nome);
+bool removerPokemonTipo(treenodeptr &p, string tipo, string nome)
+{
+	treenodeptr t;
+	if (p == NULL)
+		return false;
+	if (nome == p->pokemon.nome)
+	{
+		t = p;
+		if (p->left == NULL)
+			p = p->right;
+		else if (p->right == NULL)
+			p = p->left;
+		else
+		{
+			t = encontrarMenorPokemon(p->right);
+			p->pokemon = t->pokemon;
+		}
+		delete t;
+		return true;
+	}
+	else if (tipo < p->pokemon.tipo)
+		return removerPokemonTipo(p->left, tipo, nome);
+	else if(tipo < p->pokemon.tipo)
+		return removerPokemonTipo(p->right, tipo, nome);
+	else
+	{
+		if(nome < p->pokemon.nome)
+			return removerPokemonTipo(p->left, tipo, nome);
+		else if(nome > p->pokemon.nome)
+			return removerPokemonTipo(p->right, tipo, nome);
+	}
 }
 
 int main()
@@ -313,7 +331,7 @@ int main()
 	treenodeptr root = NULL;
 	treenodeptr root_tipos = NULL;
 	treenode *pokemonPesquisado;
-	string nome;
+	string nome, tipo;
 
 	do
 	{
@@ -371,11 +389,14 @@ int main()
 			mostrar_cidades();
 			break;
 		case 10: // remover um pokemon
-			cin >> nome;
-			if (removerPokemon(root, nome))
-			{
+			cout << "Escreva o nome e o tipo do pokemon a ser removido" << endl;
+			cin >> nome >> tipo;
+			if (removerPokemon(root, nome) && removerPokemonTipo(root, tipo, nome))
 				cout << "O pokemon foi removido" << endl;
-			}
+			else
+				cout << "Erro!" << endl;
+			fflush(stdin);
+			getchar();
 			break;
 		default:
 			cout << "Opcao invalida!" << endl;
