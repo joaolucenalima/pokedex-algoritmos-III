@@ -32,7 +32,7 @@ Para ajudar no desenvolvimento da Pokédex, o código deve ser capaz de:
 - [x] Verificar se um pokémon existe pelo seu nome (se sim, imprimir “Pokémon
   encontrado!”, se não “Pokémon não encontrado!”);
   
-- [ ] Ordenar e imprimir os pokémons por ordem alfabética dos tipos;
+- [x] Ordenar e imprimir os pokémons por ordem alfabética dos tipos;
 
 - [ ] Contar quantos pokémons tem de determinado tipo;
 

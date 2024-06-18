@@ -1,12 +1,6 @@
-// Trabalho da disciplina de Algoritmos 3, ministrada pelo professor Jonas Lopes de Vilas Boas
-// Alunos: Andre Augusto Coelho Silva, Henrique Oliveira Campello, Lucas Nolasco Ynoguti e Joao Vitor de Lucena
-
 #include <iostream>
-#include <algorithm> //transform
-#include <string>
 #include <list>
 #include <climits>
-#include <stdio.h>
 
 using namespace std;
 
@@ -19,47 +13,32 @@ struct Pokemon
 	int y;
 };
 
-struct treenode
+struct TreeNode
 {
 	Pokemon pokemon;
-	struct treenode *left;
-	struct treenode *right;
+	struct TreeNode *left;
+	struct TreeNode *right;
 };
+typedef TreeNode *treenodeptr;
 
-typedef treenode *treenodeptr;
-
-struct edge
+struct Edge
 {
 	int dest;
 	int weight;
 };
 
-struct cidade
+struct Cidade
 {
 	int codigo;
 	string nome;
 	bool centro_pkm;
-	list<edge> cidades_adj;
+	list<Edge> cidades_adj;
 };
 
-cidade cidades[10];
+Cidade cidades[10];
 int qtd_cidades = 0;
 
-Pokemon cadastro()
-{
-	Pokemon pokemon;
-	cout << "Qual o numero do pokemon?" << endl;
-	cin >> pokemon.numero;
-	cout << "Qual o nome do pokemon?" << endl;
-	getline(cin >> ws, pokemon.nome);
-	cout << "Qual o tipo do pokemon" << endl;
-	getline(cin >> ws, pokemon.tipo);
-	cout << "Qual a localizaÃ§Ã£o do pokemon? (x|y)" << endl;
-	cin >> pokemon.x >> pokemon.y;
-	return pokemon;
-}
-
-void mostra_menu()
+void mostrarMenu()
 {
 	system("cls");
 	cout << "[Digite 0 para Desligar Pokedex!]" << endl;
@@ -76,9 +55,9 @@ void mostra_menu()
 	return;
 }
 
-void cadastrocidade()
+void cadastrarCidade()
 {
-	edge a;
+	Edge a;
 	char aux;
 
 	cout << "Digite o nome da cidade que deseja cadastrar: " << endl;
@@ -125,7 +104,7 @@ int dijkstra(int start)
 	distance[start] = 0;
 	int v = start;
 	int dest, weight;
-	list<edge>::iterator it;
+	list<Edge>::iterator it;
 
 	while (intree[v] == false)
 	{
@@ -161,9 +140,9 @@ int dijkstra(int start)
 	return cidade_mais_proxima;
 }
 
-void mostrar_cidades()
+void mostrarCidades()
 {
-	list<edge>::iterator p;
+	list<Edge>::iterator p;
 	for (int i = 0; i < qtd_cidades; i++)
 	{
 		cout << "Nome da cidade: " << cidades[i].nome << endl;
@@ -182,63 +161,77 @@ void mostrar_cidades()
 	getchar();
 }
 
-void insertPokemon(treenodeptr &root, Pokemon value)
+Pokemon cadastro()
 {
-	if (root == NULL)
-	{
-		root = new treenode;
-		root->pokemon = value;
-		root->left = NULL;
-		root->right = NULL;
-	}
-	else if (value.nome < root->pokemon.nome)
-	{
-		insertPokemon(root->left, value);
-	}
-	else
-	{
-		insertPokemon(root->right, value);
-	}
+	Pokemon pokemon;
+	cout << "Qual o numero do pokemon?" << endl;
+	cin >> pokemon.numero;
+	cout << "Qual o nome do pokemon?" << endl;
+	getline(cin >> ws, pokemon.nome);
+	cout << "Qual o tipo do pokemon" << endl;
+	getline(cin >> ws, pokemon.tipo);
+	cout << "Qual a localizacao do pokemon? (x|y)" << endl;
+	cin >> pokemon.x >> pokemon.y;
+	return pokemon;
 }
 
-void insertPokemonTipo(treenodeptr &root, Pokemon value)
+void inserirPokemon(treenodeptr &root, Pokemon value)
 {
 	if (root == NULL)
 	{
-		root = new treenode;
+		root = new TreeNode;
 		root->pokemon = value;
 		root->left = NULL;
 		root->right = NULL;
+
+		return;
 	}
-	else if (value.tipo < root->pokemon.tipo)
+
+	if (value.nome < root->pokemon.nome)
+		inserirPokemon(root->left, value);
+	else if (value.nome > root->pokemon.nome)
+		inserirPokemon(root->right, value);
+}
+
+void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
+{
+	if (root == NULL)
+		return;
+
+	ordenarPorTipo(root->left, root_tipos);
+	inserirPokemonPorTipo(root_tipos, root->pokemon);
+	ordenarPorTipo(root->right, root_tipos);
+}
+
+treenodeptr inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
+{
+	if (root == NULL)
 	{
-		insertPokemon(root->left, value);
+		root = new TreeNode;
+		root->pokemon = pokemon;
+		root->left = NULL;
+		root->right = NULL;
+
+		return;
 	}
-	else if (value.tipo > root->pokemon.tipo)
-	{
-		insertPokemon(root->right, value);
-	}
+
+	if (pokemon.tipo > root->pokemon.tipo)
+		inserirPokemon(root->right, pokemon);
 	else
-	{
-		if (value.nome < root->pokemon.nome)
-			insertPokemon(root->left, value);
-		else
-			insertPokemon(root->right, value);
-	}
+		inserirPokemon(root->left, pokemon);
 }
 
 void imprimirPokemonEmOrdem(treenodeptr root)
 {
 	if (root == NULL)
-	{
 		return;
-	}
+
 	imprimirPokemonEmOrdem(root->left);
-	cout << "Nome: " << root->pokemon.nome << " Tipo: " << root->pokemon.tipo << endl;
+	cout << "Nome: " << root->pokemon.nome << " | Tipo: " << root->pokemon.tipo << endl;
 	imprimirPokemonEmOrdem(root->right);
 }
 
-treenode *pesquisarPokemon(treenodeptr root, string nome)
+treenodeptr pesquisarPokemon(treenodeptr root, string nome)
 {
 	if (root == NULL)
 		return NULL;
@@ -284,44 +277,8 @@ bool removerPokemon(treenodeptr &p, string nome)
 
 	if (nome < p->pokemon.nome)
 		return removerPokemon(p->left, nome);
-	else
-		return removerPokemon(p->right, nome);
-}
 
-bool removerPokemonTipo(treenodeptr &p, string tipo, string nome)
-{
-	treenodeptr t;
-	if (p == NULL)
-		return false;
-
-	if (nome == p->pokemon.nome)
-	{
-		t = p;
-		if (p->left == NULL)
-			p = p->right;
-		else if (p->right == NULL)
-			p = p->left;
-		else
-		{
-			t = encontrarMenorPokemon(p->right);
-			p->pokemon = t->pokemon;
-		}
-		delete t;
-		return true;
-	}
-
-	if (tipo < p->pokemon.tipo)
-		return removerPokemonTipo(p->left, tipo, nome);
-
-	if (tipo > p->pokemon.tipo)
-		return removerPokemonTipo(p->right, tipo, nome);
-	else
-	{
-		if (nome < p->pokemon.nome)
-			return removerPokemonTipo(p->left, tipo, nome);
-		else if (nome > p->pokemon.nome)
-			return removerPokemonTipo(p->right, tipo, nome);
-	}
+	return removerPokemon(p->right, nome);
 }
 
 int main()
@@ -330,31 +287,38 @@ int main()
 	Pokemon pokemon;
 	treenodeptr root = NULL;
 	treenodeptr root_tipos = NULL;
-	treenode *pokemonPesquisado;
-	string nome, tipo;
+	treenodeptr pokemonPesquisado = NULL;
+	string nome;
 
 	do
 	{
-		mostra_menu();
+		mostrarMenu();
 		cin >> x;
 
 		switch (x)
 		{
+		case 0:
+			cout << "Desligando Pokedex..." << endl;
+			break;
+
 		case 1: // cadastrar pokemon
 			pokemon = cadastro();
-			insertPokemon(root, pokemon);
-			insertPokemonTipo(root_tipos, pokemon);
+			inserirPokemon(root, pokemon);
 			break;
+
 		case 2: // listar pokemon em ordem alfabetica dos nomes
 			imprimirPokemonEmOrdem(root);
 			fflush(stdin);
 			getchar();
 			break;
-		case 3: // listar pokemon em ordem alfabetica dos tipos
+
+		case 3: // ordenar e listar pokemon em ordem alfabetica dos tipos
+			ordenarPorTipo(root, root_tipos);
 			imprimirPokemonEmOrdem(root_tipos);
 			fflush(stdin);
 			getchar();
 			break;
+
 		case 4: // pesquisar pokemons
 			cout << "Digite o nome do pokemon que deseja pesquisar: " << endl;
 			getline(cin >> ws, nome);
@@ -366,10 +330,12 @@ int main()
 				cout << "Pokemon encontrado: " << pokemonPesquisado->pokemon.nome << endl;
 
 			break;
+
 		case 5: // cadastrar cidade
-			cadastrocidade();
+			cadastrarCidade();
 			qtd_cidades++;
 			break;
+
 		case 6: // procurar pokecentro
 			cout << "De qual cidade vai partir?" << endl;
 			int c;
@@ -377,31 +343,37 @@ int main()
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
 			else
-				cout << "Cidade mais prÃ³xima com centro pokemon: " << dijkstra(c) << endl;
+				cout << "Cidade mais proxima com centro pokemon: " << dijkstra(c) << endl;
 			fflush(stdin);
 			getchar();
 			break;
+
 		case 7: // contar tipos
 			break;
+
 		case 8: // procurar pokemons por perto
 			break;
+
 		case 9:
-			mostrar_cidades();
+			mostrarCidades();
 			break;
+
 		case 10: // remover um pokemon
-			cout << "Escreva o nome e o tipo do pokemon a ser removido" << endl;
-			cin >> nome >> tipo;
-			if (removerPokemon(root, nome) && removerPokemonTipo(root, tipo, nome))
+			cout << "Escreva o nome do pokemon a ser removido" << endl;
+			cin >> nome;
+			if (removerPokemon(root, nome))
 				cout << "O pokemon foi removido" << endl;
 			else
-				cout << "Erro!" << endl;
+				cout << "Pokemon nao encontrado" << endl;
 			fflush(stdin);
 			getchar();
 			break;
+
 		default:
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
 	} while (x != 0);
+
 	return 0;
 }
