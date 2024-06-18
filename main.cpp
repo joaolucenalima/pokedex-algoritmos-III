@@ -193,17 +193,7 @@ void inserirPokemon(treenodeptr &root, Pokemon value)
 		inserirPokemon(root->right, value);
 }
 
-void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
-{
-	if (root == NULL)
-		return;
-
-	ordenarPorTipo(root->left, root_tipos);
-	inserirPokemonPorTipo(root_tipos, root->pokemon);
-	ordenarPorTipo(root->right, root_tipos);
-}
-
-treenodeptr inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
+void inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
 {
 	if (root == NULL)
 	{
@@ -219,6 +209,16 @@ treenodeptr inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
 		inserirPokemon(root->right, pokemon);
 	else
 		inserirPokemon(root->left, pokemon);
+}
+
+void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
+{
+	if (root == NULL)
+		return;
+
+	ordenarPorTipo(root->left, root_tipos);
+	inserirPokemonPorTipo(root_tipos, root->pokemon);
+	ordenarPorTipo(root->right, root_tipos);
 }
 
 void imprimirPokemonEmOrdem(treenodeptr root)
