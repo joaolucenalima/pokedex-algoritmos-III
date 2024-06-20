@@ -91,7 +91,7 @@ void cadastrarCidade()
 	cout << "Qual a localizacao da cidade? (x|y)" << endl;
 	cin >> cidades[qtd_cidades].localizacao.x >> cidades[qtd_cidades].localizacao.y;
 
-	cout << "Quantas cidades são adjacentes a " << cidades[qtd_cidades].nome << " ?" << endl;
+	cout << "Quantas cidades sÃ£o adjacentes a " << cidades[qtd_cidades].nome << " ?" << endl;
 	int qtd_adj;
 	cin >> qtd_adj;
 
@@ -104,16 +104,6 @@ void cadastrarCidade()
 		cin >> adj.weight;
 		cidades[qtd_cidades].cidades_adj.push_back(adj);
 	}
-}
-
-void printPath(int parent[], int j)
-{
-	if (parent[j] == -1)
-		return;
-
-	printPath(parent, parent[j]);
-	cout << "Caminho para o pokecentro mais proximo" << endl;
-	cout << j << endl;
 }
 
 int dijkstra(int start)
@@ -165,14 +155,7 @@ int dijkstra(int start)
 		if (distance[i] < distance[cidade_mais_proxima] && cidades[i].centro_pkm)
 			cidade_mais_proxima = i;
 	}
-	if (cidade_mais_proxima != start)
-	{
-		printPath(parent, start);
-		return cidade_mais_proxima;
-	}
-	else
-		return -1;
-
+	return cidade_mais_proxima;
 }
 
 void mostrarCidades()
@@ -224,13 +207,12 @@ void inserirPokemon(treenodeptr &root, Pokemon value)
 
 	if (value.nome < root->pokemon.nome)
 		inserirPokemon(root->left, value);
-	else
+	else if (value.nome > root->pokemon.nome)
 		inserirPokemon(root->right, value);
 }
 
 void lerArquivo(treenodeptr &root)
 {
-
 	ifstream file("pokemons.txt");
 	if (!file.is_open())
 	{
@@ -273,9 +255,9 @@ void inserirPokemonPorTipo(treenodeptr &root, Pokemon pokemon)
 	}
 
 	if (ehMenor(pokemon, root->pokemon))
-		inserirPokemon(root->left, pokemon);
+		inserirPokemonPorTipo(root->left, pokemon);
 	else
-		inserirPokemon(root->right, pokemon);
+		inserirPokemonPorTipo(root->right, pokemon);
 }
 
 void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
@@ -300,18 +282,18 @@ void contarTipo(treenodeptr root, map<string, int> &qtd_tipos)
 
 void imprimirPokemonEmOrdem(treenodeptr root)
 {
-	if (root == NULL)
-		return;
-
-	imprimirPokemonEmOrdem(root->left);
-	cout << "Nome: " << root->pokemon.nome << " | Tipo: " << root->pokemon.tipo << endl;
-	imprimirPokemonEmOrdem(root->right);
+	if (root != NULL)
+	{
+		imprimirPokemonEmOrdem(root->left);
+		cout << "Nome: " << root->pokemon.nome << " | Tipo: " << root->pokemon.tipo << endl;
+		imprimirPokemonEmOrdem(root->right);
+	}
 }
 
 double distancia(Ponto p1, Ponto p2)
 {
 	return sqrt((p1.x - p2.x) * (p1.x - p2.x) +
-				(p1.y - p2.y) * (p1.y - p2.y));
+							(p1.y - p2.y) * (p1.y - p2.y));
 }
 void qtdPokemons(treenodeptr root, Ponto p, int &cont)
 {
@@ -374,19 +356,6 @@ bool removerPokemon(treenodeptr &p, string nome)
 	return removerPokemon(p->right, nome);
 }
 
-void destroy(treenodeptr &p)
-{
-	if (p != NULL)
-	{
-		if (p->left != NULL)
-			destroy(p->left);
-		if (p->right != NULL)
-			destroy(p->right);
-		delete (p);
-	}
-	p = NULL;
-}
-
 int main()
 {
 	int cont;
@@ -424,7 +393,6 @@ int main()
 			break;
 
 		case 3: // ordenar e listar pokemon em ordem alfabetica dos tipos
-			destroy(root_tipos);
 			ordenarPorTipo(root, root_tipos);
 			imprimirPokemonEmOrdem(root_tipos);
 			fflush(stdin);
@@ -448,15 +416,13 @@ int main()
 			break;
 
 		case 6: // procurar pokecentro
-			int result;
 			cout << "De qual cidade vai partir?" << endl;
 			int c;
 			cin >> c;
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
-			else if(dijkstra(c) == -1)
-				cout << "Erro ao encontrar a cideade" << endl;
-
+			else
+				cout << "Cidade mais proxima com centro pokemon: " << dijkstra(c) << endl;
 			fflush(stdin);
 			getchar();
 			break;
@@ -499,9 +465,7 @@ int main()
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
-	}
-	while (x != 0);
-	destroy(root);
-	destroy(root_tipos);
+	} while (x != 0);
+
 	return 0;
 }
