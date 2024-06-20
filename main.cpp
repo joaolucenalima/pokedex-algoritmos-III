@@ -4,6 +4,7 @@
 #include <fstream>
 #include <windows.h>
 #include <stdio.h>
+#include <map>
 
 using namespace std;
 
@@ -257,6 +258,16 @@ void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
 	ordenarPorTipo(root->right, root_tipos);
 }
 
+void contarTipo(treenodeptr root, map<string, int> &qtd_tipos)
+{
+	if(root != NULL)
+	{
+		contarTipo(root->left, qtd_tipos);
+		qtd_tipos[root->pokemon.tipo]++;
+		contarTipo(root->right, qtd_tipos);
+	}
+}
+
 void imprimirPokemonEmOrdem(treenodeptr root)
 {
 	if (root == NULL)
@@ -317,6 +328,8 @@ bool removerPokemon(treenodeptr &p, string nome)
 	return removerPokemon(p->right, nome);
 }
 
+
+
 int main()
 {
 	int x;
@@ -324,6 +337,7 @@ int main()
 	treenodeptr root = NULL;
 	treenodeptr root_tipos = NULL;
 	treenodeptr pokemonPesquisado = NULL;
+	map <string, int> qtd_tipos;
 	string nome;
 
 	lerArquivo(root);
@@ -386,6 +400,13 @@ int main()
 			break;
 
 		case 7: // contar tipos
+			contarTipo(root, qtd_tipos);
+			for(map<string, int>::iterator it = qtd_tipos.begin(); it != qtd_tipos.end(); it++)
+			{
+				cout << "Tipo: " << it->first << " Quantidade: " << it->second << endl;
+			}
+			fflush(stdin);
+			getchar();
 			break;
 
 		case 8: // procurar pokemons por perto
@@ -410,7 +431,8 @@ int main()
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
-	} while (x != 0);
+	}
+	while (x != 0);
 
 	return 0;
 }
