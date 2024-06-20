@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <list>
 #include <climits>
@@ -6,6 +7,8 @@
 #include <stdio.h>
 #include <map>
 #include <math.h>
+#include <locale.h>
+
 
 using namespace std;
 
@@ -53,28 +56,48 @@ int qtd_cidades = 0;
 void mostrarMenu()
 {
 	system("cls");
-	cout << "[Digite 0 para Desligar Pokedex!]" << endl;
-	cout << "[Digite 1 para cadastrar um pokemon!]" << endl;
-	cout << "[Digite 2 para listar os pokemons cadastrados!]" << endl;
-	cout << "[Digite 3 para listar os pokemons cadastrados em ordem alfabetica dos tipos!]" << endl;
-	cout << "[Digite 4 para pesquisar um Pokemon!]" << endl;
-	cout << "[Digite 5 para cadastrar cidade!]" << endl;
-	cout << "[Digite 6 para Pokecentro mais perto!]" << endl;
-	cout << "[Digite 7 para contar quantos pokemons tem de determinado tipo!]" << endl;
-	cout << "[Digite 8 para mostrar quantos pokemons pode ser encontrados em um raio de 100 metros!]" << endl;
-	cout << "[Digite 9 para mostrar todas as cidades.]" << endl;
-	cout << "[Digite 10 remover um pokemon.]" << endl;
+	system("color 47");
+	cout << "#############################################" << endl;
+	cout << "#                                           #" << endl;
+	cout << "#            ___  ___  ___  ___  ___        #" << endl;
+	cout << "#           |___||___||___||___||___|       #" << endl;
+	cout << "#                                           #" << endl;
+	cout << "#             P O K E D E X                 #" << endl;
+	cout << "#                                           #" << endl;
+	cout << "#############################################" << endl;
+	cout << "#                                           #" << endl;
+	cout << "# [0] Desligar Pokedex                      #" << endl;
+	cout << "# [1] Cadastrar um Pokemon                  #" << endl;
+	cout << "# [2] Listar os Pokemons cadastrados        #" << endl;
+	cout << "# [3] Listar Pokemons por tipo (A-Z)        #" << endl;
+	cout << "# [4] Pesquisar um Pokemon                  #" << endl;
+	cout << "# [5] Cadastrar cidade                      #" << endl;
+	cout << "# [6] Pokecentro mais perto                 #" << endl;
+	cout << "# [7] Contar Pokemons de determinado tipo   #" << endl;
+	cout << "# [8] Pokemons em raio de 100 metros        #" << endl;
+	cout << "# [9] Mostrar todas as cidades              #" << endl;
+	cout << "# [10] Remover um Pokemon                   #" << endl;
+	cout << "#                                           #" << endl;
+	cout << "#############################################" << endl;
+
 	return;
+}
+
+void aperteEnter()
+{
+	cout << "Aperte [ENTER] para retornar ao menu!" << endl;
+	fflush(stdin);
+	getchar();
 }
 
 void cadastrarCidade()
 {
 	char aux;
 
-	cout << "Digite o nome da cidade que deseja cadastrar: " << endl;
-	getline(cin >> ws, cidades[qtd_cidades].nome);
 	cout << "Digite o codigo da cidade: " << endl;
 	cin >> cidades[qtd_cidades].codigo;
+	cout << "Digite o nome da cidade que deseja cadastrar: " << endl;
+	getline(cin >> ws, cidades[qtd_cidades].nome);
 	cout << "Existe um centro pokemon nessa cidade? (s/n)" << endl;
 	cin >> aux;
 	while (aux != 's' && aux != 'n')
@@ -172,7 +195,7 @@ void mostrarCidades()
 
 		cout << "Cidades adjacentes:";
 		for (p = cidades[i].cidades_adj.begin(); p != cidades[i].cidades_adj.end(); p++)
-			cout << " " << p->dest;
+			cout << " " << p->dest << endl;
 		cout << endl;
 	}
 	fflush(stdin);
@@ -293,7 +316,7 @@ void imprimirPokemonEmOrdem(treenodeptr root)
 double distancia(Ponto p1, Ponto p2)
 {
 	return sqrt((p1.x - p2.x) * (p1.x - p2.x) +
-							(p1.y - p2.y) * (p1.y - p2.y));
+				(p1.y - p2.y) * (p1.y - p2.y));
 }
 void qtdPokemons(treenodeptr root, Ponto p, int &cont)
 {
@@ -358,6 +381,8 @@ bool removerPokemon(treenodeptr &p, string nome)
 
 int main()
 {
+	SetConsoleOutputCP(CP_UTF8);
+	setlocale(LC_ALL, "pt_PT.UTF-8");
 	int cont;
 	int x;
 	Ponto ponto;
@@ -388,15 +413,13 @@ int main()
 
 		case 2: // listar pokemon em ordem alfabetica dos nomes
 			imprimirPokemonEmOrdem(root);
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 
 		case 3: // ordenar e listar pokemon em ordem alfabetica dos tipos
 			ordenarPorTipo(root, root_tipos);
 			imprimirPokemonEmOrdem(root_tipos);
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 
 		case 4: // pesquisar pokemons
@@ -408,6 +431,7 @@ int main()
 				cout << "Pokemon nao encontrado!" << endl;
 			else
 				cout << "Pokemon encontrado: " << pokemonPesquisado->pokemon.nome << endl;
+			aperteEnter();
 			break;
 
 		case 5: // cadastrar cidade
@@ -423,8 +447,7 @@ int main()
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
 			else
 				cout << "Cidade mais proxima com centro pokemon: " << dijkstra(c) << endl;
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 
 		case 7: // contar tipos
@@ -433,8 +456,7 @@ int main()
 			{
 				cout << "Tipo: " << it->first << " Quantidade: " << it->second << endl;
 			}
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 
 		case 8: // procurar pokemons por perto
@@ -443,8 +465,7 @@ int main()
 			cin >> ponto.x >> ponto.y;
 			qtdPokemons(root, ponto, cont);
 			cout << "Quantidade de pokemons em um raio de 100 m: " << cont << endl;
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 		case 9:
 			mostrarCidades();
@@ -457,15 +478,16 @@ int main()
 				cout << "O pokemon foi removido" << endl;
 			else
 				cout << "Pokemon nao encontrado" << endl;
-			fflush(stdin);
-			getchar();
+			aperteEnter();
 			break;
 
 		default:
 			cout << "Opcao invalida!" << endl;
+			aperteEnter();
 			break;
 		}
-	} while (x != 0);
+	}
+	while (x != 0);
 
 	return 0;
 }
