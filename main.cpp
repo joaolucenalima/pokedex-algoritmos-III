@@ -2,6 +2,8 @@
 #include <list>
 #include <climits>
 #include <fstream>
+#include <windows.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -224,6 +226,7 @@ void lerArquivo(treenodeptr &root)
 		file >> pokemon.ponto.y;
 		inserirPokemon(root, pokemon);
 	}
+	file.close();
 }
 
 void inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
@@ -363,7 +366,6 @@ int main()
 				cout << "Pokemon nao encontrado!" << endl;
 			else
 				cout << "Pokemon encontrado: " << pokemonPesquisado->pokemon.nome << endl;
-
 			break;
 
 		case 5: // cadastrar cidade
