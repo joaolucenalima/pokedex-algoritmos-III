@@ -285,7 +285,7 @@ void imprimirPokemonEmOrdem(treenodeptr root)
 double distancia(Ponto p1, Ponto p2)
 {
 	return sqrt((p1.x - p2.x) * (p1.x - p2.x) +
-							(p1.y - p2.y) * (p1.y - p2.y));
+				(p1.y - p2.y) * (p1.y - p2.y));
 }
 void qtdPokemons(treenodeptr root, Ponto p, int &cont)
 {
@@ -348,6 +348,19 @@ bool removerPokemon(treenodeptr &p, string nome)
 	return removerPokemon(p->right, nome);
 }
 
+void destroy(treenodeptr &p)
+{
+	if (p != NULL)
+	{
+		if (p->left != NULL)
+			destroy(p->left);
+		if (p->right != NULL)
+			destroy(p->right);
+		delete (p);
+	}
+	p = NULL;
+}
+
 int main()
 {
 	int cont;
@@ -385,6 +398,7 @@ int main()
 			break;
 
 		case 3: // ordenar e listar pokemon em ordem alfabetica dos tipos
+			destroy(root_tipos);
 			ordenarPorTipo(root, root_tipos);
 			imprimirPokemonEmOrdem(root_tipos);
 			fflush(stdin);
@@ -458,6 +472,7 @@ int main()
 			break;
 		}
 	} while (x != 0);
-
+	destroy(root);
+	destroy(root_tipos);
 	return 0;
 }
