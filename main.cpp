@@ -1,16 +1,22 @@
 #include <iostream>
 #include <list>
 #include <climits>
+#include <fstream>
 
 using namespace std;
+
+struct Ponto
+{
+	int x;
+	int y;
+};
 
 struct Pokemon
 {
 	int numero;
 	string nome;
 	string tipo;
-	int x;
-	int y;
+	Ponto ponto;
 };
 
 struct TreeNode
@@ -31,7 +37,9 @@ struct Cidade
 {
 	int codigo;
 	string nome;
+	Ponto localizacao;
 	bool centro_pkm;
+
 	list<Edge> cidades_adj;
 };
 
@@ -57,7 +65,7 @@ void mostrarMenu()
 
 void cadastrarCidade()
 {
-	Edge a;
+	Edge adj;
 	char aux;
 
 	cout << "Digite o nome da cidade que deseja cadastrar: " << endl;
@@ -77,14 +85,17 @@ void cadastrarCidade()
 	else
 		cidades[qtd_cidades].centro_pkm = false;
 
+	cout << "Qual a localizacao da cidade? (x|y)" << endl;
+	cin >> cidades[qtd_cidades].localizacao.x >> cidades[qtd_cidades].localizacao.y;
+
 	cout << "Escreva a lista de cidades adjacentes a cidade e seus pesos. Digite -1 quando terminar." << endl;
-	cin >> a.dest >> a.weight;
-	while (a.dest != -1 && a.weight != -1)
+	cin >> adj.dest >> adj.weight;
+	while (adj.dest != -1 && adj.weight != -1)
 	{
-		cidades[qtd_cidades].cidades_adj.push_back(a);
-		a.dest = qtd_cidades;
-		cidades[a.dest].cidades_adj.push_back(a);
-		cin >> a.dest >> a.weight;
+		cidades[qtd_cidades].cidades_adj.push_back(adj);
+		adj.dest = qtd_cidades;
+		cidades[adj.dest].cidades_adj.push_back(adj);
+		cin >> adj.dest >> adj.weight;
 	}
 }
 
@@ -171,7 +182,7 @@ Pokemon cadastro()
 	cout << "Qual o tipo do pokemon" << endl;
 	getline(cin >> ws, pokemon.tipo);
 	cout << "Qual a localizacao do pokemon? (x|y)" << endl;
-	cin >> pokemon.x >> pokemon.y;
+	cin >> pokemon.ponto.x >> pokemon.ponto.y;
 	return pokemon;
 }
 
@@ -191,6 +202,28 @@ void inserirPokemon(treenodeptr &root, Pokemon value)
 		inserirPokemon(root->left, value);
 	else if (value.nome > root->pokemon.nome)
 		inserirPokemon(root->right, value);
+}
+
+void lerArquivo(treenodeptr &root)
+{
+
+	ifstream file("pokemons.txt");
+	if (!file.is_open())
+	{
+		cout << "Erro ao abrir o arquivo." << endl;
+		return;
+	}
+
+	while (!file.eof())
+	{
+		Pokemon pokemon;
+		file >> pokemon.numero;
+		file >> pokemon.nome;
+		file >> pokemon.tipo;
+		file >> pokemon.ponto.x;
+		file >> pokemon.ponto.y;
+		inserirPokemon(root, pokemon);
+	}
 }
 
 void inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
@@ -289,6 +322,8 @@ int main()
 	treenodeptr root_tipos = NULL;
 	treenodeptr pokemonPesquisado = NULL;
 	string nome;
+
+	lerArquivo(root);
 
 	do
 	{
