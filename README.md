@@ -34,6 +34,6 @@ Para ajudar no desenvolvimento da Pokédex, o código deve ser capaz de:
   
 - [x] Ordenar e imprimir os pokémons por ordem alfabética dos tipos;
 
-- [ ] Contar quantos pokémons tem de determinado tipo;
+- [x] Contar quantos pokémons tem de determinado tipo;
 
-- [ ] Mostrar quantos pokémons podem ser encontrados em um raio de 100 metros, dada a localização atual (x,y) da Pokédex.
+- [x] Mostrar quantos pokémons podem ser encontrados em um raio de 100 metros, dada a localização atual (x,y) da Pokédex.
