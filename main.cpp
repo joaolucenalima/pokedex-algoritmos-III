@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <map>
+#include <math.h>
 
 using namespace std;
 
@@ -278,6 +279,22 @@ void imprimirPokemonEmOrdem(treenodeptr root)
 	imprimirPokemonEmOrdem(root->right);
 }
 
+double distancia(Ponto p1, Ponto p2)
+{
+	return sqrt((p1.x - p2.x) * (p1.x - p2.x) +
+				(p1.y - p2.y) * (p1.y - p2.y));
+}
+void qtdPokemons(treenodeptr root, Ponto p, int &cont)
+{
+	if(root != NULL)
+	{
+		qtdPokemons(root->left, p, cont);
+		if(distancia(p, root->pokemon.ponto) < 100)
+			cont++;
+		qtdPokemons(root->left, p, cont);
+	}
+}
+
 treenodeptr pesquisarPokemon(treenodeptr root, string nome)
 {
 	if (root == NULL)
@@ -332,13 +349,16 @@ bool removerPokemon(treenodeptr &p, string nome)
 
 int main()
 {
+	int cont;
 	int x;
+	Ponto ponto;
 	Pokemon pokemon;
 	treenodeptr root = NULL;
 	treenodeptr root_tipos = NULL;
 	treenodeptr pokemonPesquisado = NULL;
 	map <string, int> qtd_tipos;
 	string nome;
+
 
 	lerArquivo(root);
 
@@ -410,8 +430,14 @@ int main()
 			break;
 
 		case 8: // procurar pokemons por perto
+			cont = 0;
+			cout << "Qual a sua posicao? (x|y)" << endl;
+			cin >> ponto.x >> ponto.y;
+			qtdPokemons(root, ponto, cont);
+			cout << "Quantidade de pokemons em um raio de 100 m: " << cont << endl;
+			fflush(stdin);
+			getchar();
 			break;
-
 		case 9:
 			mostrarCidades();
 			break;
