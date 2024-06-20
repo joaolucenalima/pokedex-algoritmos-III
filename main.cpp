@@ -106,6 +106,16 @@ void cadastrarCidade()
 	}
 }
 
+void printPath(int parent[], int j)
+{
+	if (parent[j] == -1)
+		return;
+
+	printPath(parent, parent[j]);
+	cout << "Caminho para o pokecentro mais proximo" << endl;
+	cout << j << endl;
+}
+
 int dijkstra(int start)
 {
 	bool intree[qtd_cidades];
@@ -155,7 +165,14 @@ int dijkstra(int start)
 		if (distance[i] < distance[cidade_mais_proxima] && cidades[i].centro_pkm)
 			cidade_mais_proxima = i;
 	}
-	return cidade_mais_proxima;
+	if (cidade_mais_proxima != start)
+	{
+		printPath(parent, start);
+		return cidade_mais_proxima;
+	}
+	else
+		return -1;
+
 }
 
 void mostrarCidades()
@@ -422,13 +439,15 @@ int main()
 			break;
 
 		case 6: // procurar pokecentro
+			int result;
 			cout << "De qual cidade vai partir?" << endl;
 			int c;
 			cin >> c;
 			if (cidades[c].centro_pkm)
 				cout << "Existe um centro pokemon na cidade: " << c << endl;
-			else
-				cout << "Cidade mais proxima com centro pokemon: " << dijkstra(c) << endl;
+			else if(dijkstra(c) == -1)
+				cout << "Erro ao encontrar a cideade" << endl;
+
 			fflush(stdin);
 			getchar();
 			break;
@@ -471,7 +490,8 @@ int main()
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
-	} while (x != 0);
+	}
+	while (x != 0);
 	destroy(root);
 	destroy(root_tipos);
 	return 0;
