@@ -69,7 +69,6 @@ void mostrarMenu()
 
 void cadastrarCidade()
 {
-	Edge adj;
 	char aux;
 
 	cout << "Digite o nome da cidade que deseja cadastrar: " << endl;
@@ -92,14 +91,18 @@ void cadastrarCidade()
 	cout << "Qual a localizacao da cidade? (x|y)" << endl;
 	cin >> cidades[qtd_cidades].localizacao.x >> cidades[qtd_cidades].localizacao.y;
 
-	cout << "Escreva a lista de cidades adjacentes a cidade e seus pesos. Digite -1 quando terminar." << endl;
-	cin >> adj.dest >> adj.weight;
-	while (adj.dest != -1 && adj.weight != -1)
+	cout << "Quantas cidades são adjacentes a " << cidades[qtd_cidades].nome << " ?" << endl;
+	int qtd_adj;
+	cin >> qtd_adj;
+
+	for (int i = 0; i < qtd_adj; i++)
 	{
+		Edge adj;
+		cout << "Digite o codigo da cidade adjacente: " << endl;
+		cin >> adj.dest;
+		cout << "Digite a distancia entre as cidades: " << endl;
+		cin >> adj.weight;
 		cidades[qtd_cidades].cidades_adj.push_back(adj);
-		adj.dest = qtd_cidades;
-		cidades[adj.dest].cidades_adj.push_back(adj);
-		cin >> adj.dest >> adj.weight;
 	}
 }
 
@@ -231,7 +234,7 @@ void lerArquivo(treenodeptr &root)
 	file.close();
 }
 
-void inserirPokemonPorTipo(treenodeptr root, Pokemon pokemon)
+void inserirPokemonPorTipo(treenodeptr &root, Pokemon pokemon)
 {
 	if (root == NULL)
 	{
@@ -261,7 +264,7 @@ void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
 
 void contarTipo(treenodeptr root, map<string, int> &qtd_tipos)
 {
-	if(root != NULL)
+	if (root != NULL)
 	{
 		contarTipo(root->left, qtd_tipos);
 		qtd_tipos[root->pokemon.tipo]++;
@@ -282,14 +285,14 @@ void imprimirPokemonEmOrdem(treenodeptr root)
 double distancia(Ponto p1, Ponto p2)
 {
 	return sqrt((p1.x - p2.x) * (p1.x - p2.x) +
-				(p1.y - p2.y) * (p1.y - p2.y));
+							(p1.y - p2.y) * (p1.y - p2.y));
 }
 void qtdPokemons(treenodeptr root, Ponto p, int &cont)
 {
-	if(root != NULL)
+	if (root != NULL)
 	{
 		qtdPokemons(root->left, p, cont);
-		if(distancia(p, root->pokemon.ponto) < 100)
+		if (distancia(p, root->pokemon.ponto) < 100)
 			cont++;
 		qtdPokemons(root->left, p, cont);
 	}
@@ -345,8 +348,6 @@ bool removerPokemon(treenodeptr &p, string nome)
 	return removerPokemon(p->right, nome);
 }
 
-
-
 int main()
 {
 	int cont;
@@ -356,9 +357,8 @@ int main()
 	treenodeptr root = NULL;
 	treenodeptr root_tipos = NULL;
 	treenodeptr pokemonPesquisado = NULL;
-	map <string, int> qtd_tipos;
+	map<string, int> qtd_tipos;
 	string nome;
-
 
 	lerArquivo(root);
 
@@ -421,7 +421,7 @@ int main()
 
 		case 7: // contar tipos
 			contarTipo(root, qtd_tipos);
-			for(map<string, int>::iterator it = qtd_tipos.begin(); it != qtd_tipos.end(); it++)
+			for (map<string, int>::iterator it = qtd_tipos.begin(); it != qtd_tipos.end(); it++)
 			{
 				cout << "Tipo: " << it->first << " Quantidade: " << it->second << endl;
 			}
@@ -457,8 +457,7 @@ int main()
 			cout << "Opcao invalida!" << endl;
 			break;
 		}
-	}
-	while (x != 0);
+	} while (x != 0);
 
 	return 0;
 }
