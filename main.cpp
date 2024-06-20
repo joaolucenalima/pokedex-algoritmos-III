@@ -251,6 +251,15 @@ void lerArquivo(treenodeptr &root)
 	file.close();
 }
 
+bool ehMenor(Pokemon a, Pokemon b)
+{
+	if (a.tipo == b.tipo)
+	{
+		return a.nome < b.nome;
+	}
+	return a.tipo < b.tipo;
+}
+
 void inserirPokemonPorTipo(treenodeptr &root, Pokemon pokemon)
 {
 	if (root == NULL)
@@ -263,7 +272,7 @@ void inserirPokemonPorTipo(treenodeptr &root, Pokemon pokemon)
 		return;
 	}
 
-	if (pokemon.tipo < root->pokemon.tipo)
+	if (ehMenor(pokemon, root->pokemon))
 		inserirPokemon(root->left, pokemon);
 	else
 		inserirPokemon(root->right, pokemon);
