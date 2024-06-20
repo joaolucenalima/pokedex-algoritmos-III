@@ -224,7 +224,7 @@ void inserirPokemon(treenodeptr &root, Pokemon value)
 
 	if (value.nome < root->pokemon.nome)
 		inserirPokemon(root->left, value);
-	else if (value.nome > root->pokemon.nome)
+	else
 		inserirPokemon(root->right, value);
 }
 
@@ -263,10 +263,10 @@ void inserirPokemonPorTipo(treenodeptr &root, Pokemon pokemon)
 		return;
 	}
 
-	if (pokemon.tipo > root->pokemon.tipo)
-		inserirPokemon(root->right, pokemon);
-	else
+	if (pokemon.tipo < root->pokemon.tipo)
 		inserirPokemon(root->left, pokemon);
+	else
+		inserirPokemon(root->right, pokemon);
 }
 
 void ordenarPorTipo(treenodeptr root, treenodeptr &root_tipos)
