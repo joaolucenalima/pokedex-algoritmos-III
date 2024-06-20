@@ -12,19 +12,19 @@ Grama
 
 2
 Squirtle
-Água
+Agua
 5
 6
 
 3
 Pikachu
-Elétrico
+Eletrico
 7
 8
 
 4
 Jigglypuff
-Normal/Fada
+Normal
 9
 10
 
@@ -36,7 +36,7 @@ Normal
 
 6
 Psyduck
-Água
+Agua
 13
 14
 
@@ -66,37 +66,37 @@ Normal
 
 11
 Lapras
-Água/Gelo
+Agua
 23
 24
 
 12
 Gyarados
-Água/Voador
+Agua
 25
 26
 
 13
 Alakazam
-Psíquico
+Psiquico
 27
 28
 
 14
 Dragonite
-Dragão/Voador
+Dragao
 29
 30
 
 15
 Vaporeon
-Água
+Agua
 31
 32
 
 16
 Jolteon
-Elétrico
+Eletrico
 33
 34
 
@@ -108,13 +108,13 @@ Fogo
 
 18
 Mewtwo
-Psíquico
+Psiquico
 37
 38
 
 19
 Mew
-Psíquico
+Psiquico
 39
 40
 
@@ -126,24 +126,24 @@ Fogo
 
 21
 Onix
-Pedra/Terra
+Pedra
 43
 44
 
 22
 Kabutops
-Pedra/Água
+Pedra
 45
 46
 
 23
 Aerodactyl
-Pedra/Voador
+Pedra
 47
 48
 
 24
 Zapdos
-Elétrico/Voador
+Eletrico
 49
 50
